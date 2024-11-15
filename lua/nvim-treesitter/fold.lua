@@ -17,6 +17,11 @@ local folds_levels = tsutils.memoize_by_buf_tick(function(bufnr)
   end
 
   local parser = parsers.get_parser(bufnr)
+  -- When the plugin wants to access the state after a
+  -- (possible) edit it must call parse() again. If the buffer wasn't edited, the
+  -- same tree will be returned again without extra work. If the buffer was parsed
+  -- before, incremental parsing will be done of the changed parts.
+  parser:parse()
 
   if not parser then
     return {}
